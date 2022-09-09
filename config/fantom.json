@@ -1,0 +1,6 @@
+{
+  "network": "avalanche",
+  "chainId": "43114",
+  "baseV1Factory": "0xc62Ca231Cd2b0c530C622269dA02374134511a36",
+  "baseV1FactoryStartBlock": "12034480"
+}

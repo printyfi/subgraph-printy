@@ -1,0 +1,63 @@
+specVersion: 0.0.4
+description: Analytics for the Solidly fork.
+repository: https://github.com/prityfi
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Factory
+    network: avalanche
+    source:
+      address: '0xc62Ca231Cd2b0c530C622269dA02374134511a36'
+      abi: BaseV1Factory
+      startBlock: 12034480
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/index.ts
+      entities:
+        - Pair
+        - Token
+      abis:
+        - name: BaseV1Factory
+          file: ./abis/BASE_V1_FACTORY.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+      eventHandlers:
+        - event: PairCreated(indexed address,indexed address,bool,address,uint256)
+          handler: handlePairCreated
+templates:
+  - kind: ethereum/contract
+    name: Pair
+    network: avalanche
+    source:
+      abi: BaseV1Pair
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/index.ts
+      entities:
+        - Pair
+        - Token
+      abis:
+        - name: BaseV1Pair
+          file: ./abis/BASE_V1_PAIR.json
+        - name: BaseV1Factory
+          file: ./abis/BASE_V1_FACTORY.json
+      eventHandlers:
+        - event: Mint(indexed address,uint256,uint256)
+          handler: handleMint
+        - event: Burn(indexed address,uint256,uint256,indexed address)
+          handler: handleBurn
+        - event: Swap(indexed address,uint256,uint256,uint256,uint256,indexed address)
+          handler: handleSwap
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Sync(uint256,uint256)
+          handler: handleSync
